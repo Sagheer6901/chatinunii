@@ -1,4 +1,5 @@
-
+import 'package:chatinunii/components/bottomnavbar.dart';
+import 'package:chatinunii/screens/editprofile.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
 import '../chats/components/body.dart';
@@ -17,7 +18,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
-      body:  Body(),
+      body: Body(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         backgroundColor: kPrimaryColor,
@@ -26,7 +27,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
           color: Colors.white,
         ),
       ),
-      bottomNavigationBar: buildBottomNavigationBar(),
+      bottomNavigationBar: BuildBottomNavBar().buildbottonnavBar(0, context),
     );
   }
 
@@ -37,47 +38,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
       title: const Text(
         "Chats",
       ),
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.search),
-        )
-      ],
-    );
-  }
-
-  BottomNavigationBar buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      currentIndex: _selectIndex,
-      onTap: (value) {
-        setState(() {
-          _selectIndex = value;
-        });
-      },
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.messenger),
-          label: "Chats",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.people),
-          label: "People",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.call),
-          label: "Calls",
-        ),
-        BottomNavigationBarItem(
-          icon: CircleAvatar(
-            radius: 14,
-            backgroundImage: AssetImage(
-              "assets/images/user_2.png",
-            ),
-          ),
-          label: "Profile",
-        ),
-      ],
     );
   }
 }

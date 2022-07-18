@@ -1,4 +1,5 @@
 import 'package:chatinunii/authScreens/login.dart';
+import 'package:chatinunii/authScreens/signup.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/primary_button.dart';
@@ -55,7 +56,14 @@ class SignInOrSignUpScreen extends StatelessWidget {
               PrimaryButton(
                 color: Theme.of(context).colorScheme.secondary,
                 text: "Sign Up",
-                press: () {},
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Signup(),
+                    ),
+                  );
+                },
               ),
               const Spacer(
                 flex: 2,

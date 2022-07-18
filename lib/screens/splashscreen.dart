@@ -4,8 +4,6 @@
 import 'dart:async';
 
 import 'package:chatinunii/screens/welcome/welcome_screen.dart';
-
-import '/screens/home.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {

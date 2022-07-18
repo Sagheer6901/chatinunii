@@ -24,17 +24,10 @@ class ChatInputField extends StatelessWidget {
       child: SafeArea(
         child: Row(
           children: [
-            const Icon(
-              Icons.mic,
-              color: kPrimaryColor,
-            ),
-            const SizedBox(
-              width: kDefaultPadding,
-            ),
             Expanded(
               child: Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: kDefaultPadding * 0.75),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: kDefaultPadding * 0.75),
                 height: 50,
                 decoration: BoxDecoration(
                   color: kPrimaryColor.withOpacity(0.05),
@@ -62,18 +55,7 @@ class ChatInputField extends StatelessWidget {
                       ),
                     ),
                     Icon(
-                      Icons.attach_file,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.color
-                          ?.withOpacity(0.64),
-                    ),
-                    const SizedBox(
-                      width: kDefaultPadding / 4,
-                    ),
-                    Icon(
-                      Icons.camera_alt_outlined,
+                      Icons.send,
                       color: Theme.of(context)
                           .textTheme
                           .bodyText1

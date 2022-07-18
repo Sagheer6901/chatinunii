@@ -43,23 +43,6 @@ class MessagesScreen extends StatelessWidget {
           ),
         ],
       ),
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.local_phone,
-          ),
-        ),
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.videocam,
-          ),
-        ),
-        const SizedBox(
-          width: kDefaultPadding / 2,
-        ),
-      ],
     );
   }
 }
