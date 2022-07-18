@@ -3,6 +3,8 @@
 
 import 'dart:async';
 
+import 'package:chatinunii/screens/welcome/welcome_screen.dart';
+
 import '/screens/home.dart';
 import 'package:flutter/material.dart';
 
@@ -17,8 +19,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     Timer(const Duration(seconds: 3), () async {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()));
     });
   }
 
