@@ -1,6 +1,7 @@
 import 'package:chatinunii/constants.dart';
 import 'package:chatinunii/screens/chats/chats_screen.dart';
 import 'package:chatinunii/screens/editprofile.dart';
+import 'package:chatinunii/screens/profile.dart';
 import 'package:flutter/material.dart';
 
 class BuildBottomNavBar {
@@ -42,6 +43,6 @@ btn(i, context) {
         context, MaterialPageRoute(builder: (context) => const ChatsScreen()));
   } else {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const EditProfile()));
+        context, MaterialPageRoute(builder: (context) => const Profile()));
   }
 }

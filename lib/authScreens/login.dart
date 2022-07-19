@@ -1,3 +1,4 @@
+import 'package:chatinunii/authScreens/signup.dart';
 import 'package:chatinunii/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -13,7 +14,19 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
+String? lang;
+
 class _LoginState extends State<Login> {
+  @override
+  void didChangeDependencies() {
+    Locale myLocale = Localizations.localeOf(context);
+    setState(() {
+      lang = myLocale.toLanguageTag();
+    });
+    print('my locale ${myLocale.toLanguageTag()}');
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +120,7 @@ class _LoginState extends State<Login> {
                                       child: TextFormField(
                                         maxLines: 1,
                                         decoration: const InputDecoration(
-                                          label: Text(" E-mail ..."),
+                                          label: Text(" UserName"),
                                           border: InputBorder.none,
                                         ),
                                       ),
@@ -128,12 +141,6 @@ class _LoginState extends State<Login> {
                               decoration: BoxDecoration(
                                   border: Border.all(
                                       color: kPrimaryColor, width: 1),
-                                  // boxShadow: const [
-                                  //   BoxShadow(
-                                  //       color: Colors.purpleAccent,
-                                  //       blurRadius: 10,
-                                  //       offset: Offset(1, 1)),
-                                  // ],
                                   color: Colors.white,
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(20))),
@@ -176,6 +183,7 @@ class _LoginState extends State<Login> {
                                   borderRadius: BorderRadius.circular(20)),
                               child: InkWell(
                                 onTap: () {
+                                  print(lang);
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) =>
                                           const ChatsScreen()));
@@ -212,7 +220,12 @@ class _LoginState extends State<Login> {
                                         color: Colors.black54, fontSize: 15),
                                   ),
                                   TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Signup()));
+                                      },
                                       child: const Text(
                                         'Singup',
                                         style: TextStyle(

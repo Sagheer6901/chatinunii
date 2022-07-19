@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 
 class Apis {
   String baseurl = 'https://test-api.chatinuni.com';
-  Future signUp(
-      String username, String email, String password, String StatusId) async {
+  Future signUp(String username, String email, String password, String StatusId,
+      String lang) async {
     String finalurl = '$baseurl/User/SignUp';
     var data = {
       'UserName': username,
@@ -19,19 +19,18 @@ class Apis {
     };
     var result = await http.post(Uri.parse(finalurl),
         body: jsonEncode(data),
-        headers: {
-          'lang': 'en-US',
-          'Token': '0C4E22FF28214EBFB944C87F1A008ECB'
-        });
+        headers: {'lang': lang, 'Token': '0C4E22FF28214EBFB944C87F1A008ECB'});
     var msg = result.body;
     if (result.statusCode == 200) {
-      print(msg[0]);
+      return msg;
     }
+
+    return msg;
   }
 
-  Future getStatus() async {
+  Future getStatus(String lang) async {
     String finalurl = '$baseurl/User/GetStatusList';
-    var result = await http.get(Uri.parse(finalurl));
+    var result = await http.get(Uri.parse(finalurl), headers: {'lang': lang});
     if (result.statusCode == 200) {
       print(result.body);
       return statusModelFromJson(result.body);

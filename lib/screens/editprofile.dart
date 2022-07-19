@@ -4,9 +4,12 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:chatinunii/components/bottomnavbar.dart';
 import 'package:chatinunii/constants.dart';
+import 'package:chatinunii/models/statusmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../authScreens/signup.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile();
@@ -22,115 +25,158 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController addresss = TextEditingController();
   TextEditingController image = TextEditingController();
   bool showPassword = false;
+  String? lang;
+  StatusModel? status;
+  var data;
+  @override
+  Future<void> didChangeDependencies() async {
+    Locale myLocale = Localizations.localeOf(context);
+    setState(() {
+      lang = myLocale.toLanguageTag();
+    });
+    print('my locale ${myLocale.toLanguageTag()}');
+  }
+
   @override
   void initState() {
     // TODO: implement initState
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      Locale myLocale = Localizations.localeOf(context);
+      apis.getStatus(myLocale.toLanguageTag()).then((value) {
+        setState(() {
+          status = value;
+        });
+        // print(value.isSuccess);
+        if (value.isSuccess == false) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Unable to get Status')));
+        }
+        print(status!.response.statuses.length);
+      }).whenComplete(() {
+        int range = status!.response.statuses.length;
+        if (statuses.isEmpty) {
+          for (var i = 0; i < range; i++) {
+            statuses.add((status!.response.statuses[i].statusName).toString());
+          }
+        }
+      });
+    });
   }
 
-  var data;
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
-        child: ListView(
-          children: [
-            SizedBox(
-              height: 25,
-            ),
-            Center(
-              child: Stack(
-                children: [
-                  // CircleAvatar(
-                  //             radius: 50,
-                  //             backgroundImage:
-                  //                 MemoryImage(base64Decode(data[image])))
-                  //         :
-                  const CircleAvatar(
-                    radius: 50,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      chooseImage();
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          width: 4,
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                        ),
-                        color: kPrimaryColor,
-                      ),
-                      child: Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+      body: status == null
+          ? Center(
+              child: CircularProgressIndicator(
+                color: kPrimaryColor,
               ),
-            ),
-            Center(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 45,
-                  ),
-                  buildTextField(
-                      "Username",
-                      usernamee,
-                      Icon(
-                        Icons.abc,
-                        color: kPrimaryColor,
-                        size: 35,
-                      )),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.01,
-                  ),
-                  buildTextField(
-                      "Status",
-                      addresss,
-                      Icon(
-                        Icons.tips_and_updates_sharp,
-                        color: kPrimaryColor,
-                      )),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
-                  ),
-                ],
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  height: 50,
-                  child: RaisedButton(
-                    onPressed: () {},
-                    color: kPrimaryColor,
-                    padding: EdgeInsets.symmetric(horizontal: 50),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Text(
-                      "SAVE",
-                      style: TextStyle(
-                          fontSize: 14,
-                          letterSpacing: 2.2,
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
             )
-          ],
-        ),
-      ),
-      bottomNavigationBar: BuildBottomNavBar().buildbottonnavBar(2, context),
+          : Container(
+              padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: 25,
+                  ),
+                  Center(
+                    child: Stack(
+                      children: [
+                        // CircleAvatar(
+                        //             radius: 50,
+                        //             backgroundImage:
+                        //                 MemoryImage(base64Decode(data[image])))
+                        //         :
+                        const CircleAvatar(
+                          radius: 50,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            chooseImage();
+                          },
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                width: 4,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                              ),
+                              color: kPrimaryColor,
+                            ),
+                            child: Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 45,
+                        ),
+                        buildTextField(
+                            "Username",
+                            Icon(
+                              Icons.abc,
+                              size: 30,
+                              color: kPrimaryColor,
+                            ),
+                            usernamee),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        buildTextField(
+                            "Email",
+                            Icon(
+                              Icons.email,
+                              color: kPrimaryColor,
+                            ),
+                            usernamee),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        statusList(),
+                        SizedBox(
+                          height: 50,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        height: 50,
+                        child: RaisedButton(
+                          onPressed: () {},
+                          color: kPrimaryColor,
+                          padding: EdgeInsets.symmetric(horizontal: 50),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Text(
+                            "SAVE",
+                            style: TextStyle(
+                                fontSize: 14,
+                                letterSpacing: 2.2,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
     );
   }
 
@@ -162,6 +208,14 @@ class _EditProfileState extends State<EditProfile> {
 
   AppBar buildAppBar() {
     return AppBar(
+      leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          }),
       automaticallyImplyLeading: false,
       backgroundColor: kPrimaryColor,
       title: const Text(
@@ -171,7 +225,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget buildTextField(
-      String labelText, TextEditingController ctrl, Icon icon) {
+      String labelText, Icon icon, TextEditingController ctrl) {
     return Container(
         width: double.infinity,
         height: 70,
@@ -200,5 +254,55 @@ class _EditProfileState extends State<EditProfile> {
             ),
           ],
         ));
+  }
+
+  List statuses = [];
+  String? _mySelection;
+  Widget statusList() {
+    return Container(
+      height: 65,
+      width: MediaQuery.of(context).size.width * 0.82,
+      decoration: BoxDecoration(
+        // color: kPrimaryColor,
+        border: Border.all(color: kPrimaryColor),
+        borderRadius:
+            BorderRadius.circular(MediaQuery.of(context).size.width * 0.05),
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(10, 5, 10, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Icon(
+              Icons.bubble_chart,
+              color: kPrimaryColor,
+            ),
+            DropdownButton<String>(
+                hint: _mySelection == null
+                    ? Text('Select Status',
+                        style: TextStyle(color: kPrimaryColor, fontSize: 16))
+                    : Text(_mySelection!,
+                        style: TextStyle(color: kPrimaryColor, fontSize: 16)),
+                style: TextStyle(color: kPrimaryColor, fontSize: 16),
+                // dropdownColor: kPrimaryColor,
+                items: statuses.map(
+                  (val) {
+                    return DropdownMenuItem<String>(
+                      value: val,
+                      child: Text(val),
+                    );
+                  },
+                ).toList(),
+                onChanged: (val) {
+                  setState(
+                    () {
+                      _mySelection = val!;
+                    },
+                  );
+                }),
+          ],
+        ),
+      ),
+    );
   }
 }

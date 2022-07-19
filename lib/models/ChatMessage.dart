@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-enum ChatMessageType { text, audio, image, video }
+enum ChatMessageType { text }
+
 enum MessageStatus { not_sent, not_view, viewed }
 
 class ChatMessage {
@@ -28,24 +29,6 @@ List demeChatMessages = [
     text: "Hello, How are you?",
     messageType: ChatMessageType.text,
     messageStatus: MessageStatus.viewed,
-    isSender: true,
-  ),
-  ChatMessage(
-    text: "",
-    messageType: ChatMessageType.audio,
-    messageStatus: MessageStatus.viewed,
-    isSender: false,
-  ),
-  ChatMessage(
-    text: "",
-    messageType: ChatMessageType.video,
-    messageStatus: MessageStatus.viewed,
-    isSender: true,
-  ),
-  ChatMessage(
-    text: "Error happend",
-    messageType: ChatMessageType.text,
-    messageStatus: MessageStatus.not_sent,
     isSender: true,
   ),
   ChatMessage(

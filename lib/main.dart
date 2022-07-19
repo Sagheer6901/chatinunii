@@ -1,5 +1,9 @@
+import 'package:chatinunii/screens/profile.dart';
+
 import '/screens/splashscreen.dart';
 import 'package:flutter/material.dart';
+
+import 'constants.dart';
 
 void main() {
   runApp(const MyApp());
