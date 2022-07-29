@@ -6,9 +6,11 @@ import 'package:chatinunii/components/toast.dart';
 import 'package:chatinunii/constants.dart';
 import 'package:chatinunii/core/apis.dart';
 import 'package:chatinunii/models/statusmodel.dart';
+import 'package:chatinunii/screens/chats/chatThroughStatus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import '../screens/SiginInOrSignUp/signin_or_signup_screen.dart';
 import '../screens/chats/chats_screen.dart';
 import '../screens/messages/components/fade_animation.dart';
 
@@ -39,6 +41,7 @@ class _SignupState extends State<Signup> {
       setState(() {
         getlang = Localizations.localeOf(context);
       });
+
       apis.getStatus(getlang!.toLanguageTag()).then((value) {
         setState(() {
           status = value;
@@ -84,21 +87,19 @@ class _SignupState extends State<Signup> {
               child: Column(
                 children: [
                   Container(
-                      margin: const EdgeInsets.only(top: 100),
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 3),
-                          borderRadius: BorderRadius.circular(5)),
-                      child: const FadeAnimation(
-                        2,
-                        Text(
-                          'ChatInUni',
-                          style: TextStyle(
-                            fontSize: 30,
-                            color: Colors.white,
-                          ),
-                        ),
-                      )),
+                    margin: const EdgeInsets.only(top: 100),
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 3),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: const Text(
+                      'ChatInUni',
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: Container(
                         width: double.infinity,
@@ -115,240 +116,208 @@ class _SignupState extends State<Signup> {
                                 height: 50,
                               ),
                               Container(
-                                  // color: Colors.red,
-                                  alignment: Alignment.topLeft,
-                                  margin: const EdgeInsets.only(
-                                      left: 22, bottom: 20),
-                                  child: const FadeAnimation(
-                                    2,
-                                    Text(
-                                      "Signup",
-                                      style: TextStyle(
-                                          fontSize: 35,
-                                          color: Colors.black87,
-                                          letterSpacing: 2,
-                                          fontFamily: "Lobster"),
-                                    ),
+                                // color: Colors.red,
+                                alignment: Alignment.topLeft,
+                                margin:
+                                    const EdgeInsets.only(left: 22, bottom: 20),
+                                child: const Text(
+                                  "Signup",
+                                  style: TextStyle(
+                                      fontSize: 35,
+                                      color: Colors.black87,
+                                      letterSpacing: 2,
+                                      fontFamily: "Lobster"),
+                                ),
+                              ),
+                              Container(
+                                  width: double.infinity,
+                                  height: 70,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 5),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: kPrimaryColor, width: 1),
+                                      color: Colors.white,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(20))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.email_outlined),
+                                      Expanded(
+                                        child: Container(
+                                          margin:
+                                              const EdgeInsets.only(left: 10),
+                                          child: TextFormField(
+                                            maxLines: 1,
+                                            controller: usernamecontroller,
+                                            decoration: const InputDecoration(
+                                              label: Text(" Username"),
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   )),
-                              FadeAnimation(
-                                2,
-                                Container(
-                                    width: double.infinity,
-                                    height: 70,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 20),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 5),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: kPrimaryColor, width: 1),
-                                        color: Colors.white,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20))),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        const Icon(Icons.email_outlined),
-                                        Expanded(
-                                          child: Container(
-                                            margin:
-                                                const EdgeInsets.only(left: 10),
-                                            child: TextFormField(
-                                              maxLines: 1,
-                                              controller: usernamecontroller,
-                                              decoration: const InputDecoration(
-                                                label: Text(" Username"),
-                                                border: InputBorder.none,
-                                              ),
+                              Container(
+                                  width: double.infinity,
+                                  height: 70,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 5),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: kPrimaryColor, width: 1),
+                                      color: Colors.white,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(20))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.password_outlined),
+                                      Expanded(
+                                        child: Container(
+                                          margin:
+                                              const EdgeInsets.only(left: 10),
+                                          child: TextFormField(
+                                            controller: emailcontroller,
+                                            maxLines: 1,
+                                            decoration: const InputDecoration(
+                                              label: Text("Email"),
+                                              border: InputBorder.none,
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    )),
-                              ),
-                              FadeAnimation(
-                                2,
-                                Container(
-                                    width: double.infinity,
-                                    height: 70,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 20),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 5),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: kPrimaryColor, width: 1),
-                                        color: Colors.white,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20))),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        const Icon(Icons.password_outlined),
-                                        Expanded(
-                                          child: Container(
-                                            margin:
-                                                const EdgeInsets.only(left: 10),
-                                            child: TextFormField(
-                                              controller: emailcontroller,
-                                              maxLines: 1,
-                                              decoration: const InputDecoration(
-                                                label: Text("Email"),
-                                                border: InputBorder.none,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                              ),
+                                      ),
+                                    ],
+                                  )),
                               const SizedBox(
                                 height: 20,
                               ),
-                              FadeAnimation(
-                                2,
-                                Container(
-                                    width: double.infinity,
-                                    height: 70,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 20, vertical: 20),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 5),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: kPrimaryColor, width: 1),
-                                        color: Colors.white,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20))),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        const Icon(Icons.password_outlined),
-                                        Expanded(
-                                          child: Container(
-                                            margin:
-                                                const EdgeInsets.only(left: 10),
-                                            child: TextFormField(
-                                              controller: passwordcontroller,
-                                              maxLines: 1,
-                                              decoration: const InputDecoration(
-                                                label: Text(" Password"),
-                                                border: InputBorder.none,
-                                              ),
+                              Container(
+                                  width: double.infinity,
+                                  height: 70,
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 5),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: kPrimaryColor, width: 1),
+                                      color: Colors.white,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(20))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const Icon(Icons.password_outlined),
+                                      Expanded(
+                                        child: Container(
+                                          margin:
+                                              const EdgeInsets.only(left: 10),
+                                          child: TextFormField(
+                                            obscureText: true,
+                                            controller: passwordcontroller,
+                                            maxLines: 1,
+                                            decoration: const InputDecoration(
+                                              label: Text(" Password"),
+                                              border: InputBorder.none,
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    )),
-                              ),
+                                      ),
+                                    ],
+                                  )),
                               const SizedBox(
                                 height: 20,
                               ),
-                              FadeAnimation(2, statusList()),
+                              statusList(),
                               const SizedBox(
                                 height: 30,
                               ),
-                              FadeAnimation(
-                                2,
-                                ElevatedButton(
-                                  onPressed: () {
-                                    for (var i = 0; i < range; i++) {
-                                      if (status!.response.statuses[i]
-                                              .statusName ==
-                                          _mySelection) {
-                                        setState(() {
-                                          statusid = status!
-                                              .response.statuses[i].statusId;
-                                          print(statusid);
-                                        });
-
-                                        break;
-                                      }
+                              ElevatedButton(
+                                onPressed: () {
+                                  apis
+                                      .signUp(
+                                          usernamecontroller.text,
+                                          emailcontroller.text,
+                                          passwordcontroller.text,
+                                          statusid!,
+                                          getlang!.toLanguageTag())
+                                      .then((value) {
+                                    print(value);
+                                    if (value == 'Bad Request') {
+                                      showToast(
+                                          "Oops! Not registered Successfully");
+                                    } else {
+                                      print(jsonDecode(value));
+                                      showToast("User registered Successfully");
                                     }
-                                    apis
-                                        .signUp(
-                                            usernamecontroller.text,
-                                            emailcontroller.text,
-                                            passwordcontroller.text,
-                                            statusid!,
-                                            getlang!.toLanguageTag())
-                                        .then((value) {
-                                      print(value);
-                                      if (value == 'Bad Request') {
-                                        showToast(
-                                            "Oops! Not registered Successfully");
-                                      } else {
-                                        print(jsonDecode(value));
-                                        showToast(
-                                            "User registered Successfully");
-                                      }
-                                    });
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      onPrimary: kPrimaryColor,
-                                      elevation: 5,
-                                      padding: EdgeInsets.zero,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20))),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                        gradient: const LinearGradient(colors: [
-                                          kPrimaryColor,
-                                          kPrimaryColor
-                                        ]),
+                                    usernamecontroller.clear();
+                                    emailcontroller.clear();
+                                    passwordcontroller.clear();
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    onPrimary: kPrimaryColor,
+                                    elevation: 5,
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Container(
-                                      width: 200,
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        'Signup',
-                                        style: TextStyle(
-                                          fontSize: 30,
-                                          color: Colors.white,
-                                        ),
+                                            BorderRadius.circular(20))),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                      gradient: const LinearGradient(colors: [
+                                        kPrimaryColor,
+                                        kPrimaryColor
+                                      ]),
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: Container(
+                                    width: 200,
+                                    height: 50,
+                                    alignment: Alignment.center,
+                                    child: const Text(
+                                      'Signup',
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              FadeAnimation(
-                                2,
-                                Container(
-                                    width: double.infinity,
-                                    height: 70,
-                                    alignment: Alignment.center,
-                                    margin: const EdgeInsets.only(top: 10),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          "Already have an account? ",
+                              Container(
+                                width: double.infinity,
+                                height: 70,
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(top: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      "Already have an account? ",
+                                      style: TextStyle(
+                                          color: Colors.black54, fontSize: 15),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Login()));
+                                        },
+                                        child: const Text(
+                                          'Login',
                                           style: TextStyle(
-                                              color: Colors.black54,
+                                              color: kPrimaryColor,
                                               fontSize: 15),
-                                        ),
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Login()));
-                                            },
-                                            child: const Text(
-                                              'Login',
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize: 15),
-                                            ))
-                                      ],
-                                    )),
+                                        ))
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -404,6 +373,16 @@ class _SignupState extends State<Signup> {
                       _mySelection = val!;
                     },
                   );
+                  for (var i = 0; i < range; i++) {
+                    if (status!.response.statuses[i].statusName ==
+                        _mySelection) {
+                      setState(() {
+                        statusid = status!.response.statuses[i].statusId;
+                        print(statusid);
+                      });
+                      break;
+                    }
+                  }
                 }),
           ],
         ),

@@ -1,4 +1,5 @@
 import 'package:chatinunii/components/bottomnavbar.dart';
+import 'package:chatinunii/screens/SiginInOrSignUp/signin_or_signup_screen.dart';
 import 'package:chatinunii/screens/editprofile.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';
@@ -13,20 +14,18 @@ class ChatsScreen extends StatefulWidget {
 
 class _ChatsScreenState extends State<ChatsScreen> {
   int _selectIndex = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(token);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(),
       body: Body(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: kPrimaryColor,
-        child: const Icon(
-          Icons.person_add_alt_1,
-          color: Colors.white,
-        ),
-      ),
       bottomNavigationBar: BuildBottomNavBar().buildbottonnavBar(0, context),
     );
   }

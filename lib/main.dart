@@ -1,3 +1,6 @@
+import 'package:chatinunii/authScreens/login.dart';
+import 'package:chatinunii/screens/chats/chatThroughStatus.dart';
+import 'package:chatinunii/screens/editprofile.dart';
 import 'package:chatinunii/screens/profile.dart';
 
 import '/screens/splashscreen.dart';
@@ -15,9 +18,14 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/login': (context) => Login(),
+      },
       debugShowCheckedModeBanner: false,
       home: SafeArea(child: SplashScreen()),
+      // EditProfile()),
     );
   }
 }

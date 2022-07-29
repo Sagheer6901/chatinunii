@@ -1,13 +1,34 @@
 import 'package:chatinunii/authScreens/login.dart';
 import 'package:chatinunii/authScreens/signup.dart';
+import 'package:chatinunii/core/apis.dart';
+import 'package:chatinunii/screens/chats/chatThroughStatus.dart';
 import 'package:flutter/material.dart';
 
 import '../../components/primary_button.dart';
 import '../../constants.dart';
 import '../chats/chats_screen.dart';
 
-class SignInOrSignUpScreen extends StatelessWidget {
+class SignInOrSignUpScreen extends StatefulWidget {
   const SignInOrSignUpScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SignInOrSignUpScreen> createState() => _SignInOrSignUpScreenState();
+}
+
+String? token;
+
+class _SignInOrSignUpScreenState extends State<SignInOrSignUpScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Apis().getToken().then((value) {
+      setState(() {
+        token = value['Response']['Token'];
+      });
+      print(token);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +75,30 @@ class SignInOrSignUpScreen extends StatelessWidget {
                 height: kDefaultPadding * 1.5,
               ),
               PrimaryButton(
-                color: Theme.of(context).colorScheme.secondary,
+                color: kPrimaryColor,
                 text: "Sign Up",
                 press: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const Signup(),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(
+                height: kDefaultPadding * 1.5,
+              ),
+              PrimaryButton(
+                color: kPrimaryColor,
+                text: "Start Chating",
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatByStatus(
+                        flag: false,
+                      ),
                     ),
                   );
                 },

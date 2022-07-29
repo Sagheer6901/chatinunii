@@ -4,12 +4,14 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:chatinunii/components/bottomnavbar.dart';
 import 'package:chatinunii/constants.dart';
+import 'package:chatinunii/core/apis.dart';
 import 'package:chatinunii/models/statusmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../authScreens/signup.dart';
+import '../components/toast.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile();
@@ -21,9 +23,9 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   String localmage = '';
   TextEditingController usernamee = TextEditingController();
-  TextEditingController contactt = TextEditingController();
-  TextEditingController addresss = TextEditingController();
-  TextEditingController image = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  // TextEditingController image = TextEditingController();
   bool showPassword = false;
   String? lang;
   StatusModel? status;
@@ -41,6 +43,16 @@ class _EditProfileState extends State<EditProfile> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    apis.getProfile().then((value) {
+      print(value);
+      if (value == 'Bad Response') {
+        showToast('Error! Can\'t Get User profile');
+      } else {
+        setState(() {
+          data = jsonDecode(value);
+        });
+      }
+    });
     Future.delayed(Duration.zero, () {
       Locale myLocale = Localizations.localeOf(context);
       apis.getStatus(myLocale.toLanguageTag()).then((value) {
@@ -74,109 +86,106 @@ class _EditProfileState extends State<EditProfile> {
                 color: kPrimaryColor,
               ),
             )
-          : Container(
-              padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
-              child: ListView(
-                children: [
-                  SizedBox(
-                    height: 25,
+          : data == null
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: kPrimaryColor,
                   ),
-                  Center(
-                    child: Stack(
-                      children: [
-                        // CircleAvatar(
-                        //             radius: 50,
-                        //             backgroundImage:
-                        //                 MemoryImage(base64Decode(data[image])))
-                        //         :
-                        const CircleAvatar(
-                          radius: 50,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            chooseImage();
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                width: 4,
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                              ),
-                              color: kPrimaryColor,
-                            ),
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Center(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 45,
-                        ),
-                        buildTextField(
-                            "Username",
-                            Icon(
-                              Icons.abc,
-                              size: 30,
-                              color: kPrimaryColor,
-                            ),
-                            usernamee),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        buildTextField(
-                            "Email",
-                            Icon(
-                              Icons.email,
-                              color: kPrimaryColor,
-                            ),
-                            usernamee),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        statusList(),
-                        SizedBox(
-                          height: 50,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                )
+              : Container(
+                  padding: EdgeInsets.fromLTRB(20, 20, 0, 0),
+                  child: ListView(
                     children: [
-                      Container(
-                        height: 50,
-                        child: RaisedButton(
-                          onPressed: () {},
-                          color: kPrimaryColor,
-                          padding: EdgeInsets.symmetric(horizontal: 50),
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Text(
-                            "SAVE",
-                            style: TextStyle(
-                                fontSize: 14,
-                                letterSpacing: 2.2,
-                                color: Colors.white),
-                          ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Center(
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 45,
+                            ),
+                            buildTextField(
+                                data["Response"]['Records'][0]['UserName'],
+                                Icon(
+                                  Icons.abc,
+                                  size: 30,
+                                  color: kPrimaryColor,
+                                ),
+                                usernamee),
+                            SizedBox(
+                              height: 25,
+                            ),
+                            buildTextField(
+                                data["Response"]['Records'][0]['Email'],
+                                Icon(
+                                  Icons.email,
+                                  color: kPrimaryColor,
+                                ),
+                                email),
+                            SizedBox(
+                              height: 25,
+                            ),
+                            statusList(),
+                            SizedBox(
+                              height: 50,
+                            ),
+                          ],
                         ),
                       ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            height: 50,
+                            child: RaisedButton(
+                              onPressed: () {
+                                print(statusid);
+                                print(passwordcontroller.text);
+                                Apis()
+                                    .updateProfile(
+                                        usernamee.text == ''
+                                            ? data["Response"]['Records'][0]
+                                                ['UserName']
+                                            : usernamee.text,
+                                        passwordcontroller.text,
+                                        email.text == ''
+                                            ? data["Response"]['Records'][0]
+                                                ['Email']
+                                            : email.text,
+                                        _mySelection == null
+                                            ? data["Response"]['Records'][0]
+                                                ['StatusId']
+                                            : statusid!)
+                                    .then((value) {
+                                  print(value);
+                                  if (value == 'Bad Request') {
+                                    showToast('Error! Profile not updated');
+                                  } else {
+                                    showToast('Profile has been updated');
+                                    Navigator.pop(context);
+                                  }
+                                });
+                              },
+                              color: kPrimaryColor,
+                              padding: EdgeInsets.symmetric(horizontal: 50),
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Text(
+                                "SAVE",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    letterSpacing: 2.2,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
                     ],
-                  )
-                ],
-              ),
-            ),
+                  ),
+                ),
     );
   }
 
@@ -299,6 +308,16 @@ class _EditProfileState extends State<EditProfile> {
                       _mySelection = val!;
                     },
                   );
+                  for (var i = 0; i < status!.response.statuses.length; i++) {
+                    if (status!.response.statuses[i].statusName ==
+                        _mySelection) {
+                      setState(() {
+                        statusid = status!.response.statuses[i].statusId;
+                        print(statusid);
+                      });
+                      break;
+                    }
+                  }
                 }),
           ],
         ),

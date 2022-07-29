@@ -1,7 +1,9 @@
 import 'package:chatinunii/constants.dart';
+import 'package:chatinunii/screens/chats/chatThroughStatus.dart';
 import 'package:chatinunii/screens/chats/chats_screen.dart';
 import 'package:chatinunii/screens/editprofile.dart';
 import 'package:chatinunii/screens/profile.dart';
+import 'package:chatinunii/screens/settings/settings.dart';
 import 'package:flutter/material.dart';
 
 class BuildBottomNavBar {
@@ -29,6 +31,10 @@ class BuildBottomNavBar {
           icon: Icon(Icons.person),
           label: "Profile",
         ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: "Settings",
+        ),
       ],
     );
   }
@@ -40,9 +46,16 @@ btn(i, context) {
         context, MaterialPageRoute(builder: (context) => const ChatsScreen()));
   } else if (i == 1) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const ChatsScreen()));
-  } else {
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChatByStatus(
+                  flag: true,
+                )));
+  } else if (i == 2) {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const Profile()));
+  } else {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const Settings()));
   }
 }
