@@ -6,13 +6,7 @@ import 'package:chatinunii/components/toast.dart';
 import 'package:chatinunii/constants.dart';
 import 'package:chatinunii/core/apis.dart';
 import 'package:chatinunii/models/statusmodel.dart';
-import 'package:chatinunii/screens/chats/chatThroughStatus.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
-import '../screens/SiginInOrSignUp/signin_or_signup_screen.dart';
-import '../screens/chats/chats_screen.dart';
-import '../screens/messages/components/fade_animation.dart';
 
 class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);

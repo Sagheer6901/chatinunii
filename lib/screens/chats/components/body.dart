@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chatinunii/components/toast.dart';
+import 'package:chatinunii/screens/profile.dart';
 import 'package:flutter/material.dart';
 
 import '../../../components/filled_outline_button.dart';
@@ -36,7 +37,10 @@ class Body extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MessagesScreen(),
+                            builder: (context) => MessagesScreen(
+                              username: '',
+                              data: data,
+                            ),
                           ),
                         );
                       },

@@ -3,7 +3,6 @@
 import 'dart:convert';
 
 import 'package:chatinunii/authScreens/login.dart';
-import 'package:chatinunii/models/singupmodel.dart';
 import 'package:chatinunii/models/statusmodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -14,14 +13,11 @@ class Apis {
 
   Future getToken() async {
     String finalurl = '$baseurl/User/GetPublicToken';
-    var result = await http.post(Uri.parse(finalurl));
+    var result = await http.post(Uri.parse(finalurl),
+        headers: {'Content-Type': 'application/json'});
     var msg = jsonDecode(result.body);
     if (result.statusCode == 200) {
       if (msg['IsSuccess'] == true) {
-        IO.Socket socket = IO.io('https://test-api.chatinuni.com');
-        socket.on('connection', (data) {});
-        socket.emit(
-            'UpdateSocketId', {'Token': jsonDecode(msg['Response']['Token'])});
         return msg;
       } else {
         return 'error';
@@ -105,6 +101,18 @@ class Apis {
 
   Future getProfile() async {
     String finalurl = '$baseurl/User/GetProfile';
+    var response = await http.get(Uri.parse(finalurl), headers: {
+      'Content-Type': 'application/json',
+      'lang': lang!,
+      'Token': token!
+    });
+    if (response.statusCode == 200) {
+      return response.body;
+    }
+  }
+
+  Future getUserProfile(String username) async {
+    String finalurl = '$baseurl/User/GetUserProfileDetail/$username';
     var response = await http.get(Uri.parse(finalurl), headers: {
       'Content-Type': 'application/json',
       'lang': lang!,
@@ -244,6 +252,23 @@ class Apis {
   Future setProfileImage(String field) async {
     String finalUrl = '$baseurl/User/SetMainProfilePhoto/$field';
     var response = await http.post(
+      Uri.parse(finalUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'lang': lang!,
+        'Token': token!
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return response.body;
+    }
+    return response.body;
+  }
+
+  Future GetMessageList() async {
+    String finalUrl = '$baseurl/User/GetMessageList';
+    var response = await http.get(
       Uri.parse(finalUrl),
       headers: {
         'Content-Type': 'application/json',

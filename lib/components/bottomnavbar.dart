@@ -52,8 +52,7 @@ btn(i, context) {
                   flag: true,
                 )));
   } else if (i == 2) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const Profile()));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Profile()));
   } else {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const Settings()));

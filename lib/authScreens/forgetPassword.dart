@@ -3,7 +3,6 @@ import 'package:chatinunii/components/toast.dart';
 import 'package:chatinunii/constants.dart';
 import 'package:chatinunii/core/apis.dart';
 import 'package:flutter/material.dart';
-import '../screens/messages/components/fade_animation.dart';
 
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({Key? key}) : super(key: key);

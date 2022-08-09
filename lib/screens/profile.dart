@@ -2,14 +2,18 @@ import 'dart:convert';
 import 'package:chatinunii/components/toast.dart';
 import 'package:chatinunii/core/apis.dart';
 import 'package:chatinunii/screens/editprofile.dart';
+import 'package:chatinunii/screens/messages/messages_screen.dart';
 import 'package:chatinunii/screens/uploadphoto.dart';
 import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+import '../authScreens/login.dart';
 import '../components/bottomnavbar.dart';
 import '../constants.dart';
-import 'messages/components/fade_animation.dart';
+import 'SiginInOrSignUp/signin_or_signup_screen.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  String? username;
+  Profile({Key? key, this.username}) : super(key: key);
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -22,31 +26,56 @@ class _ProfileState extends State<Profile> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Apis().getProfile().then((value) {
-      print(value);
-      if (value == 'Bad Response') {
-        showToast('Error! Can\'t Get User profile');
-      } else {
-        setState(() {
-          data = jsonDecode(value);
-        });
-        for (var i = 0;
-            i <
-                jsonDecode(value)["Response"]['Records'][0]['ProfilePhotos']
-                    .length;
-            i++) {
-          if (jsonDecode(value)["Response"]['Records'][0]['ProfilePhotos'][i]
-                  ['MainPhoto'] ==
-              1) {
-            setState(() {
-              mainPhoto = jsonDecode(value)["Response"]['Records'][0]
-                  ['ProfilePhotos'][i]['FileURL'];
-            });
-            break;
-          }
-        }
-      }
-    });
+    widget.username == null
+        ? Apis().getProfile().then((value) {
+            print(value);
+            if (value == 'Bad Response') {
+              showToast('Error! Can\'t Get User profile');
+            } else {
+              setState(() {
+                data = jsonDecode(value)["Response"]['Records'][0];
+              });
+              for (var i = 0;
+                  i <
+                      jsonDecode(value)["Response"]['Records'][0]
+                              ['ProfilePhotos']
+                          .length;
+                  i++) {
+                if (jsonDecode(value)["Response"]['Records'][0]['ProfilePhotos']
+                        [i]['MainPhoto'] ==
+                    1) {
+                  setState(() {
+                    mainPhoto = jsonDecode(value)["Response"]['Records'][0]
+                        ['ProfilePhotos'][i]['FileURL'];
+                  });
+                  break;
+                }
+              }
+            }
+          })
+        : Apis().getUserProfile(widget.username!).then((value) {
+            print(value);
+            if (value == 'Bad Response') {
+              showToast('Error! Can\'t Get User profile');
+            } else {
+              setState(() {
+                data = jsonDecode(value)["Response"];
+              });
+              for (var i = 0;
+                  i < jsonDecode(value)["Response"]['ProfilePhotos'].length;
+                  i++) {
+                if (jsonDecode(value)["Response"]['ProfilePhotos'][i]
+                        ['MainPhoto'] ==
+                    1) {
+                  setState(() {
+                    mainPhoto = jsonDecode(value)["Response"]['ProfilePhotos']
+                        [i]['FileURL'];
+                  });
+                  break;
+                }
+              }
+            }
+          });
   }
 
   String mainPhoto = 'abcd';
@@ -56,158 +85,173 @@ class _ProfileState extends State<Profile> {
       appBar: buildAppBar(text: "Profile"),
       body: data == null
           ? const Center(child: CircularProgressIndicator())
-          : FadeAnimation(
-              0.5,
-              Container(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Stack(
-                            children: [
-                              CircleAvatar(
-                                radius: 70,
-                                backgroundImage: NetworkImage(mainPhoto),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.05,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+          : Container(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Stack(
                           children: [
-                            Text(
-                              data["Response"]['Records'][0]['UserName'],
-                              style:
-                                  TextStyle(color: kPrimaryColor, fontSize: 16),
+                            CircleAvatar(
+                              radius: 70,
+                              backgroundImage: NetworkImage(mainPhoto),
                             ),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.width * 0.05,
-                            ),
-                            Text(data["Response"]['Records'][0]['Email'],
-                                style: TextStyle(
-                                    color: kPrimaryColor, fontSize: 16)),
                           ],
                         ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                      ],
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EditProfile()));
-                      },
-                      style: ElevatedButton.styleFrom(
-                          onPrimary: Colors.white,
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
-                      child: Ink(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: kPrimaryColor),
-                            gradient: const LinearGradient(
-                                colors: [Colors.white, Colors.white]),
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Container(
-                          width: 200,
-                          height: 40,
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'Edit Profile',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: kPrimaryColor,
-                            ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.05,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            data['UserName'],
+                            style:
+                                TextStyle(color: kPrimaryColor, fontSize: 16),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.05,
+                          ),
+                          Text(data['Email'],
+                              style: TextStyle(
+                                  color: kPrimaryColor, fontSize: 16)),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      var msgdata;
+                      widget.username == null ? null : print(socket.connected);
+                      var p = {
+                        'Message':
+                            '', // the message must be send empty string as like “”,
+                        'ToUserName':
+                            widget.username, // user profile name / UserName,
+                        'Lang': lang!, //-phone language,
+                        'Token': token!
+                      };
+                      socket.emit("CreateChat", p);
+                      print('done');
+                      socket.on('CreateChat', (data) => {msgdata = data});
+
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => widget.username == null
+                              ? const EditProfile()
+                              : MessagesScreen(
+                                  username: widget.username,
+                                  data: msgdata,
+                                )));
+                    },
+                    style: ElevatedButton.styleFrom(
+                        onPrimary: Colors.white,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20))),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                          border: Border.all(color: kPrimaryColor),
+                          gradient: const LinearGradient(
+                              colors: [Colors.white, Colors.white]),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Container(
+                        width: 200,
+                        height: 40,
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.username == null
+                              ? 'Edit Profile'
+                              : 'Send Message',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: kPrimaryColor,
                           ),
                         ),
                       ),
                     ),
-                    Divider(),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.566,
-                      child: data["Response"]['Records'][0]['ProfilePhotos'] ==
-                              null
-                          ? Center(
-                              child: Text('No Photos Found'),
-                            )
-                          : GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2),
-                              itemCount: data["Response"]['Records'][0]
-                                      ['ProfilePhotos']
-                                  .length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                          context: (context),
-                                          builder: (context) => showDetails(
-                                              data["Response"]['Records'][0]
-                                                      ['ProfilePhotos'][index]
-                                                  ['FileURL'],
-                                              data["Response"]['Records'][0]
-                                                      ['ProfilePhotos'][index]
-                                                  ['FileId']));
-                                    },
-                                    child: Container(
-                                      height: 100,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  data["Response"]['Records'][0]
-                                                          ['ProfilePhotos']
-                                                      [index]['FileURL']),
-                                              fit: BoxFit.cover)),
-                                    ),
+                  ),
+                  Divider(),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.566,
+                    child: data['ProfilePhotos'] == null
+                        ? Center(
+                            child: Text('No Photos Found'),
+                          )
+                        : GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2),
+                            itemCount: data['ProfilePhotos'].length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: InkWell(
+                                  onTap: () {
+                                    showDialog(
+                                        context: (context),
+                                        builder: (context) => showDetails(
+                                            data['ProfilePhotos'][index]
+                                                ['FileURL'],
+                                            data['ProfilePhotos'][index]
+                                                ['FileId']));
+                                  },
+                                  child: Container(
+                                    height: 100,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                data['ProfilePhotos'][index]
+                                                    ['FileURL']),
+                                            fit: BoxFit.cover)),
                                   ),
-                                );
-                              },
-                            ),
-                    )
-                  ],
-                ),
+                                ),
+                              );
+                            },
+                          ),
+                  )
+                ],
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          bool flag = false;
-          if (data["Response"]['Records'][0]['ProfilePhotos'] == null) {
-            flag = true;
-          }
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => UploadPhoto(
-                    flag: flag,
-                  )));
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Icon(Icons.add_a_photo),
-            FittedBox(
-                child: Text(
-              'Upload\nPicture',
-              style: TextStyle(fontSize: 9.5),
-            ))
-          ],
-        ),
-      ),
-      bottomNavigationBar: BuildBottomNavBar().buildbottonnavBar(2, context),
+      floatingActionButton: widget.username != null
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                bool flag = false;
+                if (data['ProfilePhotos'] == null) {
+                  flag = true;
+                }
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => UploadPhoto(
+                          flag: flag,
+                        )));
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Icon(Icons.add_a_photo),
+                  FittedBox(
+                      child: Text(
+                    'Upload\nPicture',
+                    style: TextStyle(fontSize: 9.5),
+                  ))
+                ],
+              ),
+            ),
+      bottomNavigationBar: widget.username == null
+          ? BuildBottomNavBar().buildbottonnavBar(2, context)
+          : const SizedBox(),
     );
   }
 

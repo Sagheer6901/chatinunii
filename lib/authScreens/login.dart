@@ -8,11 +8,10 @@ import 'package:chatinunii/core/apis.dart';
 import 'package:chatinunii/screens/SiginInOrSignUp/signin_or_signup_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:http/http.dart' as http;
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../components/toast.dart';
 import '../screens/chats/chats_screen.dart';
-import '../screens/messages/components/fade_animation.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -23,6 +22,10 @@ class Login extends StatefulWidget {
 
 String? lang;
 Apis apis = Apis();
+IO.Socket socket = IO.io('https://test-api.chatinuni.com', <String, dynamic>{
+  "transports": ["websocket"],
+  "autoConnect": false
+});
 
 class _LoginState extends State<Login> {
   @override
@@ -221,15 +224,21 @@ class _LoginState extends State<Login> {
                                   if (value == 'Bad Request') {
                                     showToast("Can not signin");
                                   } else {
-                                    IO.Socket socket =
-                                        IO.io('https://test-api.chatinuni.com');
-                                    socket.on('connection', (data) {});
-                                    socket.emit('UpdateSocketId', {
-                                      'Token': jsonDecode(value)['Response']
-                                          ['Token']
+                                    socket.connect();
+                                    socket.onConnect((data) {
+                                      print('connected');
+                                      print(socket.connected);
+                                      socket.on('connection', (data) {
+                                        print('socket id: ${socket.id}');
+                                      });
+                                      socket.emit(
+                                          'UpdateSocketId', {'Token': token});
+                                      print('done');
                                     });
                                     token =
                                         jsonDecode(value)['Response']['Token'];
+                                    print(
+                                        jsonDecode(value)['Response']['Token']);
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) =>

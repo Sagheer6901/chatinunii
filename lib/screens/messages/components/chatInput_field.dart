@@ -1,12 +1,19 @@
+import 'package:chatinunii/screens/SiginInOrSignUp/signin_or_signup_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
+import '../../../authScreens/login.dart';
 import '../../../constants.dart';
 
 class ChatInputField extends StatelessWidget {
-  const ChatInputField({Key? key}) : super(key: key);
+  final username;
+  var chatId;
+  ChatInputField({Key? key, required this.username, required this.chatId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController msg = TextEditingController();
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: kDefaultPadding,
@@ -46,21 +53,38 @@ class ChatInputField extends StatelessWidget {
                     const SizedBox(
                       width: kDefaultPadding / 4,
                     ),
-                    const Expanded(
+                    Expanded(
                       child: TextField(
-                        decoration: InputDecoration(
+                        controller: msg,
+                        decoration: const InputDecoration(
                           hintText: "Type Message",
                           border: InputBorder.none,
                         ),
                       ),
                     ),
-                    Icon(
-                      Icons.send,
-                      color: Theme.of(context)
-                          .textTheme
-                          .bodyText1
-                          ?.color
-                          ?.withOpacity(0.64),
+                    InkWell(
+                      onTap: () {
+                        var p = {
+                          'ChatId':
+                              chatId, // which is support from GetMessageList end point,
+                          'Message': msg.text, // message which user enters,
+                          'ToUserName': username, // selected user in chat,
+                          'Lang': lang!, //-phone language
+                          'Token':
+                              token!, //-- which is supported endpoint GetPublicToken, Login, SignUp,
+                          'IsFromLoggedUser': true //-- everytime true,
+                        };
+
+                        socket.emit('Send Message', p);
+                      },
+                      child: Icon(
+                        Icons.send,
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            ?.color
+                            ?.withOpacity(0.64),
+                      ),
                     ),
                   ],
                 ),
