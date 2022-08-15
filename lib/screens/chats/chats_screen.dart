@@ -6,6 +6,7 @@ import 'package:chatinunii/components/toast.dart';
 import 'package:chatinunii/core/apis.dart';
 import 'package:chatinunii/screens/SiginInOrSignUp/signin_or_signup_screen.dart';
 import 'package:flutter/material.dart';
+import '../../authScreens/login.dart';
 import '../../constants.dart';
 import '../../models/Chat.dart';
 import '../messages/messages_screen.dart';
@@ -25,6 +26,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
     // TODO: implement initState
     super.initState();
     print(token);
+    socket.emit('UpdateSocketId', {'Token': token});
+    print(socket.id);
     Apis().GetMessageList().then((value) {
       if (value == 'Bad Request') {
         showToast('Error in getting messages');
@@ -86,7 +89,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
                                 ['ChatCreatedUserName'],
                             lastMessage: data['Response']['Records'][index]
                                 ['LastMessageDate'],
-                            image: 'image',
+                            image: data['Response']['Records'][index]
+                                ['ProfilePhotos'][0]['FileURL'],
                             time: data['Response']['Records'][index]
                                 ['LastMessageDate'],
                             isActive: false),

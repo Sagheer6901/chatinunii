@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chatinunii/screens/SiginInOrSignUp/signin_or_signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -5,12 +7,17 @@ import 'package:socket_io_client/socket_io_client.dart';
 import '../../../authScreens/login.dart';
 import '../../../constants.dart';
 
-class ChatInputField extends StatelessWidget {
+class ChatInputField extends StatefulWidget {
   final username;
   var chatId;
   ChatInputField({Key? key, required this.username, required this.chatId})
       : super(key: key);
 
+  @override
+  State<ChatInputField> createState() => _ChatInputFieldState();
+}
+
+class _ChatInputFieldState extends State<ChatInputField> {
   @override
   Widget build(BuildContext context) {
     TextEditingController msg = TextEditingController();
@@ -64,11 +71,14 @@ class ChatInputField extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
+                        print(msg.text.trim());
                         var p = {
-                          'ChatId':
-                              chatId, // which is support from GetMessageList end point,
-                          'Message': msg.text, // message which user enters,
-                          'ToUserName': username, // selected user in chat,
+                          'ChatId': widget
+                              .chatId, // which is support from GetMessageList end point,
+                          'Message':
+                              msg.text.trim(), // message which user enters,
+                          'ToUserName':
+                              widget.username, // selected user in chat,
                           'Lang': lang!, //-phone language
                           'Token':
                               token!, //-- which is supported endpoint GetPublicToken, Login, SignUp,
@@ -77,6 +87,7 @@ class ChatInputField extends StatelessWidget {
 
                         socket.emit('Message', p);
                         socket.on('Message', (data) => print(data));
+                        setState(() {});
                       },
                       icon: Icon(
                         Icons.send,

@@ -27,32 +27,50 @@ class _BodyState extends State<Body> {
     super.initState();
     // Get Message
     print('chatId ${widget.data['ChatId']}');
+    print('messages:${widget.data['Messages'][0]['Message']}');
     print('body: ${socket.connected}');
-    socket.on('Message', (data) {
-      print('from msg');
-      setState(() {
-        msgList = data;
-      });
-      print(data);
-    });
+    socket.on('Message', (data) => {print(data)});
     print(msgList);
   }
+
+  // final ScrollController _controller = ScrollController();
+
+// This is what you're looking for!
+  // void _scrollDown() {
+  //   _controller.jumpTo(_controller.position.maxScrollExtent);
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: kDefaultPadding,
             ),
-            child: ListView.builder(
-              itemCount: demeChatMessages.length,
-              itemBuilder: (context, index) => Message(
-                message: demeChatMessages[index],
-              ),
-            ),
+            child: SingleChildScrollView(
+                reverse: true,
+                child: ListView.builder(
+                    // reverse: true,.
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    itemCount: widget.data['Messages'].length,
+                    itemBuilder: (context, index) {
+                      return Message(
+                        message: ChatMessage(
+                            text: widget.data['Messages'][index]['Message'],
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: widget.data['Messages'][index]
+                                        ['ToUserName'] ==
+                                    widget.username
+                                ? true
+                                : false),
+                        image: widget.data['ProfilePhotos'][0]['FileURL'],
+                      );
+                    })),
           ),
         ),
         ChatInputField(

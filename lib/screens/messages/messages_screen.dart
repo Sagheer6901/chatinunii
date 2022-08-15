@@ -52,10 +52,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
       title: Row(
         children: [
           const BackButton(),
-          const CircleAvatar(
-            backgroundImage: AssetImage(
-              "assets/images/user_2.png",
-            ),
+          CircleAvatar(
+            backgroundImage:
+                NetworkImage(widget.data['ProfilePhotos'][0]['FileURL']),
           ),
           const SizedBox(
             width: kDefaultPadding * 0.75,

@@ -225,20 +225,22 @@ class _LoginState extends State<Login> {
                                     showToast("Can not signin");
                                   } else {
                                     socket.connect();
-                                    socket.onConnect((data) {
+                                    print('before update ${socket.id}');
+                                    socket.onConnect((data) async {
                                       print('connected');
                                       print(socket.connected);
-                                      socket.on('connection', (data) {
-                                        print('socket id: ${socket.id}');
-                                      });
-                                      socket.emit(
-                                          'UpdateSocketId', {'Token': token});
-                                      print('done');
                                     });
+                                    socket.on(
+                                        'connection',
+                                        (data) =>
+                                            {print('socket id: ${socket.id}')});
+
+                                    print('done');
+                                    // print('updated socketid: ${socket.id}');
                                     token =
                                         jsonDecode(value)['Response']['Token'];
-                                    print(
-                                        jsonDecode(value)['Response']['Token']);
+                                    // print(
+                                    //     jsonDecode(value)['Response']['Token']);
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (context) =>

@@ -7,8 +7,9 @@ import '../../../models/ChatMessage.dart';
 
 class Message extends StatelessWidget {
   final ChatMessage message;
-
-  const Message({Key? key, required this.message}) : super(key: key);
+  final image;
+  const Message({Key? key, required this.message, required this.image})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +33,9 @@ class Message extends StatelessWidget {
             message.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (!message.isSender) ...[
-            const CircleAvatar(
+            CircleAvatar(
               radius: 12,
-              backgroundImage: AssetImage("assets/images/user_2.png"),
+              backgroundImage: NetworkImage(image),
             ),
             const SizedBox(
               width: kDefaultPadding / 2,
