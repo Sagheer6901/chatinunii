@@ -13,6 +13,7 @@ class Apis {
 
   Future getToken() async {
     String finalurl = '$baseurl/User/GetPublicToken';
+    await http.get(Uri.parse(finalurl));
     var result = await http.post(Uri.parse(finalurl),
         headers: {'Content-Type': 'application/json'});
     var msg = jsonDecode(result.body);

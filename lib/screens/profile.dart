@@ -142,7 +142,7 @@ class _ProfileState extends State<Profile> {
                       };
                       socket.emit("CreateChat", p);
                       print('done');
-                      socket.on('CreateChat', (data) => {msgdata = data});
+                      socket.on('CreateChat', (data) => {print(data)});
 
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => widget.username == null

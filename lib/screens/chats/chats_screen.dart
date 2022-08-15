@@ -61,33 +61,37 @@ class _ChatsScreenState extends State<ChatsScreen> {
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : ListView.builder(
-                itemCount: data['Response']['Records'].length,
-                itemBuilder: (context, index) {
-                  return ChatCard(
-                    press: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MessagesScreen(
-                            username: data['Response']['Records'][index]
+            : data.length == 0
+                ? Center(
+                    child: Text('No chats available'),
+                  )
+                : ListView.builder(
+                    itemCount: data['Response']['Records'].length,
+                    itemBuilder: (context, index) {
+                      return ChatCard(
+                        press: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MessagesScreen(
+                                username: data['Response']['Records'][index]
+                                    ['ChatCreatedUserName'],
+                                data: data['Response']['Records'][index],
+                              ),
+                            ),
+                          );
+                        },
+                        chat: Chat(
+                            name: data['Response']['Records'][index]
                                 ['ChatCreatedUserName'],
-                            data: data['Response']['Records'][index],
-                          ),
-                        ),
+                            lastMessage: data['Response']['Records'][index]
+                                ['LastMessageDate'],
+                            image: 'image',
+                            time: data['Response']['Records'][index]
+                                ['LastMessageDate'],
+                            isActive: false),
                       );
-                    },
-                    chat: Chat(
-                        name: data['Response']['Records'][index]
-                            ['ChatCreatedUserName'],
-                        lastMessage: data['Response']['Records'][index]
-                            ['LastMessageDate'],
-                        image: 'image',
-                        time: data['Response']['Records'][index]
-                            ['LastMessageDate'],
-                        isActive: false),
-                  );
-                }),
+                    }),
 
         // Text(data['Response']['Records'][0]['ToUserName']);
         // }),

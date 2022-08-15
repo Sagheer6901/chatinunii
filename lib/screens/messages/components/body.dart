@@ -25,6 +25,17 @@ class _BodyState extends State<Body> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // Get Message
+    print('chatId ${widget.data['ChatId']}');
+    print('body: ${socket.connected}');
+    socket.on('Message', (data) {
+      print('from msg');
+      setState(() {
+        msgList = data;
+      });
+      print(data);
+    });
+    print(msgList);
   }
 
   @override

@@ -62,8 +62,8 @@ class ChatInputField extends StatelessWidget {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {
+                    IconButton(
+                      onPressed: () {
                         var p = {
                           'ChatId':
                               chatId, // which is support from GetMessageList end point,
@@ -75,9 +75,10 @@ class ChatInputField extends StatelessWidget {
                           'IsFromLoggedUser': true //-- everytime true,
                         };
 
-                        socket.emit('Send Message', p);
+                        socket.emit('Message', p);
+                        socket.on('Message', (data) => print(data));
                       },
-                      child: Icon(
+                      icon: Icon(
                         Icons.send,
                         color: Theme.of(context)
                             .textTheme
@@ -85,7 +86,7 @@ class ChatInputField extends StatelessWidget {
                             ?.color
                             ?.withOpacity(0.64),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
