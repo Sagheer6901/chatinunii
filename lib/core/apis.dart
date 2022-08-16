@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:chatinunii/authScreens/login.dart';
+import 'package:chatinunii/models/MsgModel.dart';
 import 'package:chatinunii/models/statusmodel.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -267,7 +268,24 @@ class Apis {
     return response.body;
   }
 
-  Future GetMessageList() async {
+  // Future GetMessageList() async {
+  //   String finalUrl = '$baseurl/User/GetMessageList';
+  //   var response = await http.get(
+  //     Uri.parse(finalUrl),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'lang': lang!,
+  //       'Token': token!
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     return response.body;
+  //   }
+  //   return response.body;
+  // }
+
+  Future<MessageModel> GetMessageList() async {
     String finalUrl = '$baseurl/User/GetMessageList';
     var response = await http.get(
       Uri.parse(finalUrl),
@@ -280,7 +298,16 @@ class Apis {
 
     if (response.statusCode == 200) {
       return response.body;
+      // return Message.fromJson(jsonDecode(response.body));
     }
-    return response.body;
+    return Message.fromJson(jsonDecode(response.body));
+  }
+
+  Stream<Message> getAllMessages() async* {
+    while (true) {
+      await Future.delayed(Duration(microseconds: 500));
+      Message msgs = GetMessageList();
+      yield msgs;
+    }
   }
 }

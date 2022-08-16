@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chatinunii/core/apis.dart';
 import 'package:chatinunii/screens/profile.dart';
 import 'package:flutter/material.dart';
@@ -52,11 +54,15 @@ class _BodyState extends State<Body> {
             ),
             child: SingleChildScrollView(
                 reverse: true,
-                child: ListView.builder(
+                child: StreamBuilder(
+                  stream: Apis().getAllMessages(),
+                  builder: (context, snapshot)
+                 {
+                  return ListView.builder(
                     // reverse: true,.
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
-                    itemCount: widget.data['Messages'].length,
+                    itemCount: snapshot.data!,
                     itemBuilder: (context, index) {
                       return Message(
                         message: ChatMessage(
@@ -70,7 +76,9 @@ class _BodyState extends State<Body> {
                                 : false),
                         image: widget.data['ProfilePhotos'][0]['FileURL'],
                       );
-                    })),
+                    })
+                })
+                ),
           ),
         ),
         ChatInputField(
